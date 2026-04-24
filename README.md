@@ -13,7 +13,7 @@
 | :--- | :--- |
 | **Nama** | M. Syahrul Nugroho |
 | **NIM** | 04231064 |
-| **Prodi** | Informatika |
+| **Prodi** | Teknik Elektro |
 | **Instansi** | Institut Teknologi Kalimantan |
 
 ---
