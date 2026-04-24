@@ -1,0 +1,141 @@
+// ============================================================
+//       UJIAN TENGAH SEMESTER - PEMROGRAMAN BERORIENTASI OBJEK
+// ============================================================
+
+enum class StatusKamar {
+    KOSONG, TERISI
+}
+
+class Penyewa(
+    val nama: String,
+    saldoAwal: Int
+) {
+    var saldo: Int = saldoAwal
+        private set
+
+    fun bayar(jumlah: Int): Boolean {
+        return if (jumlah <= saldo) {
+            saldo -= jumlah
+            true
+        } else {
+            false
+        }
+    }
+}
+
+class BapakKos(
+    val nama: String
+) {
+    var pendapatan: Int = 0
+        private set
+
+    fun tambahPendapatan(jumlah: Int) {
+        pendapatan += jumlah
+    }
+}
+
+class Kamar(
+    val nomor: String,
+    val harga: Int
+) {
+    var status: StatusKamar = StatusKamar.KOSONG
+        private set
+
+    fun pesan(): Boolean {
+        return if (status == StatusKamar.KOSONG) {
+            status = StatusKamar.TERISI
+            true
+        } else {
+            false
+        }
+    }
+}
+
+class TransaksiKos {
+
+    fun pesanKamar(penyewa: Penyewa, kamar: Kamar) {
+
+        println("\n┌─────────────────────────────────┐")
+        println("│      PERMINTAAN PEMESANAN       │")
+        println("└─────────────────────────────────┘")
+        println("  Penyewa : ${penyewa.nama}")
+        println("  Kamar   : ${kamar.nomor}")
+        println("  Status  : ${kamar.status}")
+
+        if (!kamar.pesan()) {
+            println("\n  [DITOLAK] Kamar sudah terisi!")
+            return
+        }
+
+        println("\n  [BERHASIL] Kamar berhasil dipesan!")
+        println("  Status sekarang : ${kamar.status}")
+    }
+
+    fun bayarTagihan(penyewa: Penyewa, bapakKos: BapakKos, kamar: Kamar) {
+
+        val harga = kamar.harga
+
+        println("\n┌─────────────────────────────────┐")
+        println("│       PEMBAYARAN TAGIHAN        │")
+        println("└─────────────────────────────────┘")
+        println("  Penyewa : ${penyewa.nama}")
+        println("  Harga   : Rp$harga")
+        println("  Saldo   : Rp${penyewa.saldo}")
+
+        if (kamar.status != StatusKamar.TERISI) {
+            println("\n  [DITOLAK] Kamar belum dipesan!")
+            return
+        }
+
+        if (!penyewa.bayar(harga)) {
+            println("\n  [DITOLAK] Saldo tidak mencukupi!")
+            println("  Dibutuhkan: Rp$harga | Saldo: Rp${penyewa.saldo}")
+            return
+        }
+
+        bapakKos.tambahPendapatan(harga)
+
+        println("\n  [BERHASIL] Pembayaran sukses!")
+        println("  Sisa saldo     : Rp${penyewa.saldo}")
+        println("  Pendapatan kos : Rp${bapakKos.pendapatan}")
+    }
+}
+
+fun main() {
+
+    println("╔══════════════════════════════════════════╗")
+    println("║     SIMULASI UTS - PBO KOST-HUB          ║")
+    println("╠══════════════════════════════════════════╣")
+    println("║  Tema : Manajemen Kos Mahasiswa          ║")
+    println("╚══════════════════════════════════════════╝")
+
+    val transaksi = TransaksiKos()
+    val bapakKos = BapakKos("Tarjo")
+
+    // ── SKENARIO 1: GAGAL
+    println("\n══════════════════════════════════════════════")
+    println("  SKENARIO 1 — GAGAL")
+    println("══════════════════════════════════════════════")
+
+    val penyewa1 = Penyewa("Syahrul", 300000)
+    val kamar1 = Kamar("A1", 500000)
+
+    transaksi.pesanKamar(penyewa1, kamar1)
+    transaksi.pesanKamar(penyewa1, kamar1)
+    transaksi.bayarTagihan(penyewa1, bapakKos, kamar1)
+
+    // ── SKENARIO 2: SUKSES
+    println("\n══════════════════════════════════════════════")
+    println("  SKENARIO 2 — SUKSES")
+    println("══════════════════════════════════════════════")
+
+    val penyewa2 = Penyewa("Gery", 1000000)
+    val kamar2 = Kamar("B1", 400000)
+
+    transaksi.pesanKamar(penyewa2, kamar2)
+    transaksi.bayarTagihan(penyewa2, bapakKos, kamar2)
+
+    println("\n╔══════════════════════════════════════════╗")
+    println("║         SIMULASI SELESAI                 ║")
+    println("╚══════════════════════════════════════════╝")
+}
